@@ -1,0 +1,4 @@
+com.paimonx.mask.algorithm.NameMaskAlgorithm
+com.paimonx.mask.algorithm.IdNoMaskAlgorithm
+com.paimonx.mask.algorithm.PhoneMaskAlgorithm
+com.paimonx.mask.algorithm.UniversalMaskAlgorithm
