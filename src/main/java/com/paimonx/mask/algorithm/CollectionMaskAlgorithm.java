@@ -28,7 +28,7 @@ public final class CollectionMaskAlgorithm implements MaskAlgorithm {
     }
 
     @Override
-    public String encrypt(Object plaintext) {
+    public Object encrypt(Object plaintext) {
         final Collection plainList;
         if (plaintext.getClass().isArray()) {
             Object[] aa = (Object[]) plaintext;
@@ -38,16 +38,11 @@ public final class CollectionMaskAlgorithm implements MaskAlgorithm {
         }else {
             throw new RuntimeException("错误类型");
         }
-        StringBuilder builder = new StringBuilder("[");
+        List<Object> list = new ArrayList<>();
         for (Object o : plainList) {
-            builder.append("\"");
-            String encrypt = maskAlgorithm.encrypt(o);
-            builder.append(encrypt);
-            builder.append("\",");
+            list.add(maskAlgorithm.encrypt(o));
         }
-        builder.deleteCharAt(builder.length() - 1);
-        builder.append("]");
-        return builder.toString();
+        return list;
     }
 
 }

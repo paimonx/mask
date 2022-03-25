@@ -13,7 +13,7 @@ public class IdNoMaskAlgorithm implements MaskAlgorithm {
      * @return 密文
      */
     @Override
-    public String encrypt(Object plaintext) {
+    public Object encrypt(Object plaintext) {
         String idNo = String.valueOf(plaintext) ;
         return idNo.substring(0,6)+"******"+idNo.substring(idNo.length()-3);
     }

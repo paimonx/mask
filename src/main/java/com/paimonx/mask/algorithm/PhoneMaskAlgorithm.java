@@ -14,7 +14,7 @@ public class PhoneMaskAlgorithm implements MaskAlgorithm {
      * @return 密文
      */
     @Override
-    public String encrypt(Object plaintext) {
+    public Object encrypt(Object plaintext) {
         String phone = String.valueOf(plaintext) ;
         return phone.substring(0,3)+"****"+phone.substring(7);
     }

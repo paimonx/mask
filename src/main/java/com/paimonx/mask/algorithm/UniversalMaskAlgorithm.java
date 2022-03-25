@@ -13,7 +13,7 @@ public class UniversalMaskAlgorithm implements MaskAlgorithm {
     }
 
     @Override
-    public String encrypt(Object plaintext) {
+    public Object encrypt(Object plaintext) {
         return "***";
     }
 }

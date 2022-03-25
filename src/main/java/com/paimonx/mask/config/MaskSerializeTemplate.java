@@ -107,7 +107,7 @@ public abstract class MaskSerializeTemplate extends SimpleBeanPropertyFilter {
     protected abstract boolean matchRule(MaskConfigProperties maskConfigProperties, String uri, Class<?> clazz, String fieldName);
 
 
-    protected final String doMask(final String fieldName, final Object value, final Class<?> clazz) {
+    protected final Object doMask(final String fieldName, final Object value, final Class<?> clazz) {
         String maskType = getType(maskManager.getMaskConfigProperties(), RequestUtils.getRequest().getRequestURI(), fieldName, clazz);
         Assert.notNull(maskType, "maskType is null");
         MaskAlgorithm algorithm;

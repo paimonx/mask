@@ -23,5 +23,5 @@ public interface MaskAlgorithm {
      * @param plaintext 明文
      * @return ciphertext
      */
-    String encrypt(Object plaintext);
+    Object encrypt(Object plaintext);
 }

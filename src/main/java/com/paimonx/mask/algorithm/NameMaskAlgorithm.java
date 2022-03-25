@@ -30,7 +30,7 @@ public class NameMaskAlgorithm implements MaskAlgorithm, InitIal {
      * @return ciphertext
      */
     @Override
-    public String encrypt(Object plaintext) {
+    public Object encrypt(Object plaintext) {
         if (plaintext instanceof String) {
             String name = (String) plaintext;
             // 按 · 切割
