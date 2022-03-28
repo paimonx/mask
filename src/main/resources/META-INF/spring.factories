@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.paimonx.mask.support.spring.MaskAutoConfiguration
+
