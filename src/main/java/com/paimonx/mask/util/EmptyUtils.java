@@ -31,8 +31,8 @@ public class EmptyUtils {
                 return true;
             }
             boolean empty = true;
-            for (int i = 0; i < object.length; i++) {
-                if (!isEmpty(object[i])) {
+            for (Object o : object) {
+                if (!isEmpty(o)) {
                     empty = false;
                     break;
                 }
