@@ -23,13 +23,13 @@ public class MaskBeanPropertyFilter extends MaskSerializeTemplate {
     @Override
     public void serializeAsField(Object pojo, JsonGenerator jgen, SerializerProvider provider, PropertyWriter writer) throws Exception {
         if (EmptyUtils.isNotEmpty(pojo)) {
-            // 当前值
-            Object value = writer.getMember().getValue(pojo);
             // 当前key
             String fieldName = writer.getName();
             // 当前序列化的pojo class
             Class<?> clazz = pojo.getClass();
             if (canMask(clazz, fieldName)) {
+                // 当前值
+                Object value = writer.getMember().getValue(pojo);
                 jgen.writeObjectField(fieldName, doMask(fieldName, value, clazz));
             } else {
                 super.serializeAsField(pojo, jgen, provider, writer);
