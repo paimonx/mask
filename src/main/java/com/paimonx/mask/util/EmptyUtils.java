@@ -1,5 +1,6 @@
 package com.paimonx.mask.util;
 
+import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
 
@@ -25,19 +26,8 @@ public class EmptyUtils {
         if (obj instanceof Map) {
             return ((Map) obj).isEmpty();
         }
-        if (obj instanceof Object[]) {
-            Object[] object = (Object[]) obj;
-            if (object.length == 0) {
-                return true;
-            }
-            boolean empty = true;
-            for (Object o : object) {
-                if (!isEmpty(o)) {
-                    empty = false;
-                    break;
-                }
-            }
-            return empty;
+        if (obj.getClass().isArray()) {
+            return Array.getLength(obj) == 0;
         }
         return false;
     }

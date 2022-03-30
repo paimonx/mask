@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 public class RequestUtils {
 
 
+    private RequestUtils() {
+    }
+
     /**
      * 检测当前环境是否为 web 环境
      * 并返回请求
