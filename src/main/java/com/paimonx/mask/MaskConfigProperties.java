@@ -1,6 +1,5 @@
 package com.paimonx.mask;
 
-import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.HashMap;
@@ -13,7 +12,6 @@ import java.util.Set;
  * @date 2022/3/17
  */
 @ConfigurationProperties(prefix = MaskConfigProperties.PREFIX)
-@Data
 public class MaskConfigProperties {
 
     public static final String PREFIX = "spring.api.mask.config";
@@ -55,4 +53,52 @@ public class MaskConfigProperties {
     private Map<String, Map<String, String>> classDefinitions = new HashMap<>();
 
 
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public Set<String> getSkipUri() {
+        return skipUri;
+    }
+
+    public void setSkipUri(Set<String> skipUri) {
+        this.skipUri = skipUri;
+    }
+
+    public Set<String> getTrustIp() {
+        return trustIp;
+    }
+
+    public void setTrustIp(Set<String> trustIp) {
+        this.trustIp = trustIp;
+    }
+
+    public Map<String, Object> getAlgorithmMetadata() {
+        return algorithmMetadata;
+    }
+
+    public void setAlgorithmMetadata(Map<String, Object> algorithmMetadata) {
+        this.algorithmMetadata = algorithmMetadata;
+    }
+
+    public Map<String, String> getUriType() {
+        return uriType;
+    }
+
+    public void setUriType(Map<String, String> uriType) {
+        this.uriType = uriType;
+    }
+
+    public Map<String, Map<String, String>> getClassDefinitions() {
+        return classDefinitions;
+    }
+
+    public void setClassDefinitions(Map<String, Map<String, String>> classDefinitions) {
+        this.classDefinitions = classDefinitions;
+    }
 }

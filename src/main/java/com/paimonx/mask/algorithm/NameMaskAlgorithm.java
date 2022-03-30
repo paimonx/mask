@@ -17,7 +17,7 @@ public class NameMaskAlgorithm implements MaskAlgorithm, InitIal {
 
     private static final Set<String> COMPOUND_SURNAME = new HashSet<>();
 
-    private static final String DEFAULT_COMPOUND_SURNAME =   "百里、北堂、北野、北宫、辟闾;淳于、成公、陈生、褚师、" +
+    private static final String DEFAULT_COMPOUND_SURNAME =   "百里、北堂、北野、北宫、辟闾、淳于、成公、陈生、褚师、" +
             "端木、东方、东郭、东野、东门、第五、大狐、段干、段阳、带曰、第二、东宫、南宫、南郭、女娲、南伯、南容、南门、南野、" +
             "公孙、公冶、公羊、公良、公西、公孟、高堂、高阳、公析、公肩、公坚、郭公、谷梁、毌将、公乘、毌丘、公户、公广、公仪、" +
             "夹谷、九方、即墨、梁丘、闾丘、洛阳、陵尹、冷富、龙丘、令狐、林彭、欧阳、欧侯、濮阳、青阳、漆雕、亓官、渠丘、壤驷、" +
