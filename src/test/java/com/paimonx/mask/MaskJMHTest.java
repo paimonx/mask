@@ -12,6 +12,11 @@ import com.paimonx.mask.entity.Degree;
 import com.paimonx.mask.entity.User;
 import com.paimonx.mask.support.PropertyKeyConst;
 import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.results.format.ResultFormatType;
+import org.openjdk.jmh.runner.Runner;
+import org.openjdk.jmh.runner.RunnerException;
+import org.openjdk.jmh.runner.options.Options;
+import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -22,11 +27,11 @@ import java.util.concurrent.TimeUnit;
  * @date 2022/3/24
  */
 @BenchmarkMode(Mode.SampleTime)
-@Warmup(iterations = 1)
+@Warmup(iterations = 3)
 @Threads(4)
-@Fork(4)
+@Fork(1)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
-@Measurement(iterations = 2, time = 5, timeUnit = TimeUnit.SECONDS)
+@Measurement(iterations = 10, time = 5, timeUnit = TimeUnit.SECONDS)
 @State(Scope.Thread)
 public class MaskJMHTest {
 
@@ -95,10 +100,7 @@ public class MaskJMHTest {
         HashMap<String, String> userMap = new HashMap<>();
         userMap.put("idNo", "idno");
         userMap.put("name", "name");
-        userMap.put("onceName", "*name");
-        userMap.put("phone", "phone");
-        userMap.put("likes", "common");
-        userMap.put("educational", "common");
+        //userMap.put("phone", "phone");
         map.put("com.paimonx.mask.entity.User", userMap);
 
         HashMap<String, String> alternateContactMap = new HashMap<>();
@@ -129,6 +131,12 @@ public class MaskJMHTest {
 
     @Benchmark
     public void testOriginal() throws JsonProcessingException {
+        USER.setName((String) EncryptUtils.encryptName(USER.getName()));
+        USER.setIdNo((String) EncryptUtils.encryptIdNo(USER.getIdNo()));
+        AlternateContact alternateContact = USER.getAlternateContact();
+        alternateContact.setPhone((String) EncryptUtils.encryptPhone(alternateContact.getPhone()));
+        Address address = USER.getAddress();
+        address.setDetailed((String) EncryptUtils.encryptCommon(address.getDetailed()));
         String s = INITIAL_MAPPER.writeValueAsString(USER);
     }
 
@@ -142,15 +150,43 @@ public class MaskJMHTest {
     }
 
 /*    @Benchmark
-    public void testAlgorithm() {
+    public void testNameAlgorithm() {
         MaskAlgorithm algorithm = MaskManager.MASK_ALGORITHM.get("name");
-        String encrypt = algorithm.encrypt(USER.getName());
+        Object encrypt = algorithm.encrypt(USER.getName());
+    }
+
+    @Benchmark
+    public void testPhoneAlgorithm() {
+        MaskAlgorithm algorithm = MaskManager.MASK_ALGORITHM.get("phone");
+        Object encrypt = algorithm.encrypt(USER.getPhone());
+    }
+
+    @Benchmark
+    public void testIdNoAlgorithm() {
+        MaskAlgorithm algorithm = MaskManager.MASK_ALGORITHM.get("idno");
+        Object encrypt = algorithm.encrypt(USER.getIdNo());
+    }
+    @Benchmark
+    public void testCommonAlgorithm() {
+        MaskAlgorithm algorithm = MaskManager.MASK_ALGORITHM.get("common");
+        Object encrypt = algorithm.encrypt(USER.getLikes());
     }
 
     @Benchmark
     public void testCollectionMaskAlgorithm() {
         MaskAlgorithm algorithm = MaskManager.MASK_ALGORITHM.get("name");
         CollectionMaskAlgorithm collectionMaskAlgorithm = new CollectionMaskAlgorithm(algorithm);
-        String encrypt = collectionMaskAlgorithm.encrypt(USER.getOnceName());
+        Object encrypt = collectionMaskAlgorithm.encrypt(USER.getOnceName());
     }*/
+
+
+    public static void main(String[] args) throws RunnerException {
+        Options build = new OptionsBuilder()
+                .include(MaskJMHTest.class.getSimpleName())
+                .result("mask-SampleTime-1.json")
+                .resultFormat(ResultFormatType.JSON)
+                .build();
+
+        new Runner(build).run();
+    }
 }
