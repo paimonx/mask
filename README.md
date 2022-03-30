@@ -64,10 +64,10 @@
 > >         class-definitions:
 > >           "[com.paimonx.maskexample.entity.User]":
 > >             name: "name"
-> >             idNo: idno
-> >             phone: phone
+> >             idNo: "idno"
+> >             phone: "phone"
 > >           "[com.paimonx.maskexample.entity.Address]":
-> >             detailed: common
+> >             detailed: "common"
 > > ```
 
 ### 进阶使用
@@ -95,9 +95,64 @@
 
   > 因为基础类型并不被Jackson进行作用，请配置`spring.api.mask.config.uriType`来进行控制。
 
+### 性能测试
 
+> ##### 环境
+>
+> ```
+> JDK: jdk-8u191
+> CPU: R7-5800H
+> Memory: 4G
+> Spring Boot: 2.1.18.RELEASE
+> ```
+>
+> ##### 结论
+>
+> ```
+> mask(2240 ns/op)大概比Jackson序列化(2007 ns/op)慢10%左右。 这200纳秒对业务功能几乎没有影响。
+> ```
+>
+> ##### JMeter
+>
+> > * **原生Jackson**  
+> >
+> >   <img src="https://user-images.githubusercontent.com/94901242/160850005-a14513ed-03bb-40f5-8fe6-1a51c1970e43.png" alt="not" style="zoom:80%;" />
+> >
+> > * **原生Jackson(1个字段)**  
+> >
+> >   <img src="https://user-images.githubusercontent.com/94901242/160851260-947efedc-6142-40e0-bc25-4b520e63b816.png" alt="not-1" style="zoom:80%;" />
+> >
+> > * **mask(1个字段)**  
+> >
+> >   <img src="https://user-images.githubusercontent.com/94901242/160851595-d6829c4a-f2ec-4a61-9172-7b1cebf596d3.png" alt="mask-1" style="zoom:80%;" />
+> >
+> > * **mask(5个字段)**  
+> >
+> >   <img src="https://user-images.githubusercontent.com/94901242/160852059-16399216-f74b-40dc-9175-88741b2551cf.png" alt="mask-5" style="zoom:80%;" />
+>
+> ##### JVisulaVM
+>
+> > * **原生Jackson**  
+> >
+> >   <img src="https://user-images.githubusercontent.com/94901242/160853792-a00fb1a9-e6f1-4559-aa19-5bbdf4c38f4e.png" alt="not-heap" style="zoom: 33%;" />
+> >
+> > * **原生Jackson(1个字段)**  
+> >
+> >   <img src="https://user-images.githubusercontent.com/94901242/160854069-b66f0062-d659-4114-b9cc-aed5dbd5d7ad.png" alt="not-1-heap" style="zoom: 33%;" />
+> >
+> > * **mask(1个字段)**  
+> >
+> >   <img src="https://user-images.githubusercontent.com/94901242/160854212-a7593922-9f1b-4fbb-930c-8d28e78cfb4f.png" alt="mask-1-heap" style="zoom: 33%;" />
+> >
+> > * **mask(5个字段)**   
+> >
+> >   <img src="https://user-images.githubusercontent.com/94901242/160854349-44e82557-5fc8-4278-99d2-4afa096e4b43.png" alt="mask-5-heap" style="zoom: 33%;" />
+>
+> ##### JMH
+>
+> > ![JMH](https://user-images.githubusercontent.com/94901242/160866222-1df228bd-116a-4349-a6c9-3d61bb2c4572.png)
 
 ### 设计思想
-![未命名文件](https://user-images.githubusercontent.com/94901242/160125054-fc5db4df-1a49-4629-8967-f4d7e25e3878.png)
-![未命名文件 (1)](https://user-images.githubusercontent.com/94901242/160125075-ffb7f58c-9b88-4f9a-baef-18ef280bde79.png)
+<img src="https://user-images.githubusercontent.com/94901242/160125054-fc5db4df-1a49-4629-8967-f4d7e25e3878.png" alt="Spring"  />
+<img src="https://user-images.githubusercontent.com/94901242/160125075-ffb7f58c-9b88-4f9a-baef-18ef280bde79.png" alt="mask"  />
 
