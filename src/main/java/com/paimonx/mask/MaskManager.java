@@ -4,7 +4,6 @@ import com.paimonx.mask.spi.MaskAlgorithm;
 import com.paimonx.mask.spi.MaskServiceLoader;
 import com.paimonx.mask.support.InitIal;
 import com.paimonx.mask.support.MaskProcessor;
-import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +13,6 @@ import java.util.*;
  * @author xu
  * @date 2022/3/17
  */
-@Data
 public class MaskManager {
 
     private Logger log = LoggerFactory.getLogger(MaskManager.class);
@@ -41,6 +39,14 @@ public class MaskManager {
         maskProcessors.add(maskProcessor);
     }
 
+    public List<MaskProcessor> getMaskProcessors() {
+        return maskProcessors;
+    }
+
+    public MaskConfigProperties getMaskConfigProperties() {
+        return maskConfigProperties;
+    }
+
     private void init(MaskConfigProperties maskConfigProperties) {
         Properties properties = new Properties();
         maskConfigProperties.getAlgorithmMetadata().forEach(properties::putIfAbsent);
@@ -62,6 +68,7 @@ public class MaskManager {
                 // 终止启动
                 throw new RuntimeException("There Are Duplicate Algorithm Configurations，class:" + maskAlgorithm.getClass());
             } else {
+                log.debug("{}实例化成功，type:{}",maskAlgorithm.getClass().getName(),type);
                 MASK_ALGORITHM.put(type, maskAlgorithm);
             }
         }
