@@ -12,7 +12,6 @@ import com.paimonx.mask.entity.Degree;
 import com.paimonx.mask.entity.User;
 import com.paimonx.mask.support.PropertyKeyConst;
 import com.paimonx.mask.util.EncryptUtils;
-import org.junit.Test;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.results.format.ResultFormatType;
 import org.openjdk.jmh.runner.Runner;
@@ -150,8 +149,7 @@ public class MaskJMHTest {
      *  3.
      * @throws JsonProcessingException
      */
-    //@Benchmark
-    @Test
+    @Benchmark
     public void testMask() throws JsonProcessingException {
         String s = MASK_MAPPER.writeValueAsString(USER);
     }
