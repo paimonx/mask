@@ -11,6 +11,8 @@ import com.paimonx.mask.entity.AlternateContact;
 import com.paimonx.mask.entity.Degree;
 import com.paimonx.mask.entity.User;
 import com.paimonx.mask.support.PropertyKeyConst;
+import com.paimonx.mask.util.EncryptUtils;
+import org.junit.Test;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.results.format.ResultFormatType;
 import org.openjdk.jmh.runner.Runner;
@@ -100,7 +102,8 @@ public class MaskJMHTest {
         HashMap<String, String> userMap = new HashMap<>();
         userMap.put("idNo", "idno");
         userMap.put("name", "name");
-        //userMap.put("phone", "phone");
+        // userMap.put("phone", "phone");
+        // userMap.put("onceName","*name");
         map.put("com.paimonx.mask.entity.User", userMap);
 
         HashMap<String, String> alternateContactMap = new HashMap<>();
@@ -142,9 +145,13 @@ public class MaskJMHTest {
 
     /**
      * 需要去除代码中对uri 的判断
+     *  1. 使 com.paimonx.mask.util.RequestUtils#getRequest()   return null;
+     *  2. com.paimonx.mask.config.MaskSerializeTemplate#canMask(java.lang.Class, java.lang.String)  第42-48行注释掉，54行 uri->null
+     *  3.
      * @throws JsonProcessingException
      */
-    @Benchmark
+    //@Benchmark
+    @Test
     public void testMask() throws JsonProcessingException {
         String s = MASK_MAPPER.writeValueAsString(USER);
     }
