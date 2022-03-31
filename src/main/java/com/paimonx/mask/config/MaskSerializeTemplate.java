@@ -82,7 +82,7 @@ public abstract class MaskSerializeTemplate extends SimpleBeanPropertyFilter {
      */
     private boolean afterMatchRule() {
         List<MaskProcessor> maskProcessors = maskManager.getMaskProcessors();
-        if (EmptyUtils.isEmpty(maskProcessors)){
+        if (EmptyUtils.isEmpty(maskProcessors)) {
             return true;
         }
         for (MaskProcessor maskProcessor : maskProcessors) {
@@ -107,8 +107,8 @@ public abstract class MaskSerializeTemplate extends SimpleBeanPropertyFilter {
     protected abstract boolean matchRule(MaskConfigProperties maskConfigProperties, String uri, Class<?> clazz, String fieldName);
 
 
-    protected final Object doMask(final String fieldName, final Object value, final Class<?> clazz) {
-        String maskType = getType(maskManager.getMaskConfigProperties(), RequestUtils.getRequest().getRequestURI(), fieldName, clazz);
+    protected final Object doMask(final Object value, final Class<?> clazz, final String fieldName, final String uri) {
+        String maskType = getType(maskManager.getMaskConfigProperties(), uri, fieldName, clazz);
         Assert.notNull(maskType, "maskType is null");
         MaskAlgorithm algorithm;
         if (maskType.startsWith(CollectionMaskAlgorithm.LABEL)) {

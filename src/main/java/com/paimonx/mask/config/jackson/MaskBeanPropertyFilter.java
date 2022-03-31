@@ -28,7 +28,7 @@ public class MaskBeanPropertyFilter extends MaskSerializeTemplate {
         if (canMask(clazz, fieldName)) {
             // 当前值
             Object value = writer.getMember().getValue(pojo);
-            jgen.writeObjectField(fieldName, doMask(fieldName, value, clazz));
+            jgen.writeObjectField(fieldName, doMask(value, clazz,fieldName,null));
         } else {
             super.serializeAsField(pojo, jgen, provider, writer);
         }

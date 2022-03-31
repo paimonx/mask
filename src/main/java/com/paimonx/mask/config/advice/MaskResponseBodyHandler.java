@@ -3,6 +3,7 @@ package com.paimonx.mask.config.advice;
 import com.paimonx.mask.MaskConfigProperties;
 import com.paimonx.mask.MaskManager;
 import com.paimonx.mask.config.MaskSerializeTemplate;
+import com.paimonx.mask.util.RequestUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -32,7 +33,7 @@ public class MaskResponseBodyHandler extends MaskSerializeTemplate implements Re
 
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
-        return doMask(null, body, null);
+        return doMask(body, null,null, RequestUtils.getRequest().getRequestURI());
     }
 
     @Override
