@@ -121,7 +121,7 @@ public class MaskJMHTest {
     static {
         // 添加 module
         SimpleModule simpleModule = new SimpleModule();
-        simpleModule.setSerializerModifier(new MaskBeanSerializerModifier());
+        simpleModule.setSerializerModifier(new MaskBeanSerializerModifier(maskManager.getMaskConfigProperties()));
         MASK_MAPPER.registerModule(simpleModule);
 
         // 添加 filter

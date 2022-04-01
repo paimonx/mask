@@ -4,13 +4,13 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.paimonx.mask.MaskConfigProperties;
 import com.paimonx.mask.MaskManager;
 import com.paimonx.mask.algorithm.CollectionMaskAlgorithm;
+import com.paimonx.mask.processor.MaskTypePostProcessor;
 import com.paimonx.mask.spi.MaskAlgorithm;
-import com.paimonx.mask.support.MaskProcessor;
-import com.paimonx.mask.util.EmptyUtils;
-import com.paimonx.mask.util.RequestUtils;
 import org.springframework.util.Assert;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -26,114 +26,55 @@ public abstract class MaskSerializeTemplate extends SimpleBeanPropertyFilter {
     }
 
 
-    /**
-     * 是否能进行 mock
-     *
-     * @param clazz 正在序列化的类信息
-     * @return true-mask;false-notMask
-     */
-    protected final boolean canMask(final Class<?> clazz, final String fieldName) {
-        // 1全局开关
+    protected final String getMaskType(final Class<?> clazz, final String fieldName,final String uri) {
+        // 获取 相应的type
+        String maskType = doGetMaskType(clazz, fieldName, uri);
+        if (null == maskType){
+            return null;
+        }
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         MaskConfigProperties maskConfigProperties = maskManager.getMaskConfigProperties();
-        if (!maskConfigProperties.isEnabled()) {
-            return false;
-        }
-        // 2 检验web 环境
-        HttpServletRequest request = RequestUtils.getRequest();
-        // 获取请求uri
-        String uri = request.getRequestURI();
-        // 3 校验 skipUri
-        if (maskConfigProperties.getSkipUri().contains(uri)) {
-            return false;
-        }
-        // 4 规则 匹配前判断   满足其中一个就不进行mask
-        if (!beforeMatchRule()) {
-            return false;
-        }
-        // 5规则匹配 由子类实现
-        if (!matchRule(maskConfigProperties, uri, clazz, fieldName)) {
-            return false;
-        }
-        // 6 规则匹配后在修改  原本需要 mask，在满足全部条件后，便不再需要进行mask了
-        return afterMatchRule();
+        // 如果当前正在进行的是class模式 并且该请求已经被 uri模式处理过，就不再进行处理
+/*        if (null != clazz && doChooseUriOrClass(maskConfigProperties, requestAttributes)) {
+            return null;
+        }*/
+        // 一些后置处理
+        maskType = doWebPostProcessor(maskConfigProperties, requestAttributes, maskType);
+        return maskType;
     }
 
+    protected boolean doChooseUriOrClass(MaskConfigProperties maskConfigProperties, RequestAttributes requestAttributes) {
+        Assert.notNull(requestAttributes, "当前非web环境");
+        return maskConfigProperties.getUriType().containsKey(((ServletRequestAttributes) requestAttributes).getRequest().getRequestURI());
+    }
 
-    /**
-     * 存在一个为 false 就不进行false
-     *
-     * @return boolean
-     */
-    private boolean beforeMatchRule() {
-        List<MaskProcessor> maskProcessors = maskManager.getMaskProcessors();
-        for (MaskProcessor maskProcessor : maskProcessors) {
-            boolean b = maskProcessor.beforeMatchRule(maskManager);
-            if (!b) {
-                return false;
+    protected String doWebPostProcessor(MaskConfigProperties maskConfigProperties, RequestAttributes requestAttributes, String maskType) {
+        List<MaskTypePostProcessor> maskTypePostProcessors = maskManager.getMaskTypePostProcessors();
+        for (MaskTypePostProcessor maskTypePostProcessor : maskTypePostProcessors) {
+            maskType = maskTypePostProcessor.webPostProcessor(maskConfigProperties, requestAttributes, maskType);
+            if (null == maskType) {
+                return null;
             }
         }
-        return true;
+        return maskType;
     }
 
-    /**
-     * 全部为 false 就不进行了
-     *
-     * @return boolean
-     */
-    private boolean afterMatchRule() {
-        List<MaskProcessor> maskProcessors = maskManager.getMaskProcessors();
-        if (EmptyUtils.isEmpty(maskProcessors)) {
-            return true;
-        }
-        for (MaskProcessor maskProcessor : maskProcessors) {
-            boolean b = maskProcessor.afterMatchRule(maskManager);
-            if (b) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 匹配规则
-     * 具体如何匹配 由子类决定
-     *
-     * @param maskConfigProperties 全局配置信息
-     * @param uri                  当前线程的uri
-     * @param clazz                正在序列化的类信息
-     * @param fieldName            fieldName
-     * @return true-mask; false-noMask
-     */
-    protected abstract boolean matchRule(MaskConfigProperties maskConfigProperties, String uri, Class<?> clazz, String fieldName);
+    protected abstract String doGetMaskType(final Class<?> clazz, final String fieldName, final String uri);
 
 
-    protected final Object doMask(final Object value, final Class<?> clazz, final String fieldName, final String uri) {
-        String maskType = getType(maskManager.getMaskConfigProperties(), uri, fieldName, clazz);
-        Assert.notNull(maskType, "maskType is null");
-        MaskAlgorithm algorithm;
+    protected final Object doMask(final Object value, final String maskType) {
+
+        final MaskAlgorithm algorithm;
         if (maskType.startsWith(CollectionMaskAlgorithm.LABEL)) {
-            maskType = maskType.substring(1);
-            algorithm = MaskManager.MASK_ALGORITHM.get(maskType);
-            Assert.notNull(algorithm, "未找到type为" + maskType + "实现");
-            algorithm = new CollectionMaskAlgorithm(algorithm);
+            String specificMaskType = maskType.substring(1);
+            MaskAlgorithm specificAlgorithm = MaskManager.MASK_ALGORITHM.get(specificMaskType);
+            Assert.notNull(specificAlgorithm, "未找到type为:" + maskType + "实现");
+            algorithm = new CollectionMaskAlgorithm(specificAlgorithm);
         } else {
             algorithm = MaskManager.MASK_ALGORITHM.get(maskType);
-            Assert.notNull(algorithm, "未找到type为" + maskType + "实现");
+            Assert.notNull(algorithm, "未找到type为:" + maskType + "实现");
         }
         return algorithm.encrypt(value);
-
     }
-
-    /**
-     * 获取配置的 maskType
-     *
-     * @param maskConfigProperties 全局配置
-     * @param uri                  请求uri
-     * @param fieldName            fieldName
-     * @param clazz                类信息
-     * @return maskType
-     */
-    protected abstract String getType(MaskConfigProperties maskConfigProperties, String uri, String fieldName, Class<?> clazz);
-
 
 }

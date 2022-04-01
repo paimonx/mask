@@ -39,7 +39,7 @@ public class MaskWebMvcConfigurer implements WebMvcConfigurer {
                 ObjectMapper objectMapper = httpMessageConverter.getObjectMapper();
                 // 添加 module
                 SimpleModule simpleModule = new SimpleModule();
-                simpleModule.setSerializerModifier(new MaskBeanSerializerModifier());
+                simpleModule.setSerializerModifier(new MaskBeanSerializerModifier(maskManager.getMaskConfigProperties()));
                 objectMapper.registerModule(simpleModule);
 
                 // 添加 filter

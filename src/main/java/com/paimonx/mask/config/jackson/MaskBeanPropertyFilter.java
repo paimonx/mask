@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ser.PropertyWriter;
 import com.paimonx.mask.MaskConfigProperties;
 import com.paimonx.mask.MaskManager;
 import com.paimonx.mask.config.MaskSerializeTemplate;
+import com.paimonx.mask.util.EmptyUtils;
 
 /**
  * @author xu
@@ -25,10 +26,11 @@ public class MaskBeanPropertyFilter extends MaskSerializeTemplate {
         String fieldName = writer.getName();
         // 当前序列化的pojo class
         Class<?> clazz = pojo.getClass();
-        if (canMask(clazz, fieldName)) {
+        String maskType = getMaskType(clazz, fieldName,null);
+        if (EmptyUtils.isNotEmpty(maskType)) {
             // 当前值
             Object value = writer.getMember().getValue(pojo);
-            jgen.writeObjectField(fieldName, doMask(value, clazz,fieldName,null));
+            jgen.writeObjectField(fieldName, doMask(value,maskType));
         } else {
             super.serializeAsField(pojo, jgen, provider, writer);
         }
@@ -36,16 +38,10 @@ public class MaskBeanPropertyFilter extends MaskSerializeTemplate {
     }
 
     @Override
-    protected boolean matchRule(MaskConfigProperties maskConfigProperties, String uri, Class<?> clazz, String fieldName) {
-        String className = clazz.getName();
-        return (!(maskConfigProperties.getUriType().containsKey(uri))) &&
-                (maskConfigProperties.getClassDefinitions().containsKey(className)) &&
-                maskConfigProperties.getClassDefinitions().get(className).containsKey(fieldName);
-    }
-
-    @Override
-    protected String getType(MaskConfigProperties maskConfigProperties, String uri, String fieldName, Class<?> clazz) {
+    protected String doGetMaskType(Class<?> clazz, String fieldName, String uri) {
+        MaskConfigProperties maskConfigProperties = maskManager.getMaskConfigProperties();
         return maskConfigProperties.getClassDefinitions().get(clazz.getName()).get(fieldName);
     }
+
 
 }

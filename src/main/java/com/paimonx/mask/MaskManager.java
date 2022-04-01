@@ -1,9 +1,9 @@
 package com.paimonx.mask;
 
+import com.paimonx.mask.processor.MaskTypePostProcessor;
 import com.paimonx.mask.spi.MaskAlgorithm;
 import com.paimonx.mask.spi.MaskServiceLoader;
 import com.paimonx.mask.support.InitIal;
-import com.paimonx.mask.support.MaskProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,26 +21,26 @@ public class MaskManager {
 
     public final static Map<String, MaskAlgorithm> MASK_ALGORITHM = new HashMap<>(8);
 
-    private final List<MaskProcessor> maskProcessors = new ArrayList<>();
+    private final List<MaskTypePostProcessor> maskTypePostProcessors = new ArrayList<>();
 
 
 
-    public MaskManager(MaskConfigProperties maskConfigProperties, MaskProcessor... maskProcessors) {
-        this(maskConfigProperties, Arrays.asList(maskProcessors));
+    public MaskManager(MaskConfigProperties maskConfigProperties, MaskTypePostProcessor... maskTypePostProcessors) {
+        this(maskConfigProperties, Arrays.asList(maskTypePostProcessors));
     }
 
-    public MaskManager(MaskConfigProperties maskConfigProperties, Collection<MaskProcessor> maskProcessors) {
+    public MaskManager(MaskConfigProperties maskConfigProperties, Collection<MaskTypePostProcessor> maskTypePostProcessors) {
         this.maskConfigProperties = maskConfigProperties;
-        this.maskProcessors.addAll(maskProcessors);
+        this.maskTypePostProcessors.addAll(maskTypePostProcessors);
         init(maskConfigProperties);
     }
 
-    public void setMaskProcessor(MaskProcessor maskProcessor) {
-        maskProcessors.add(maskProcessor);
+    public void addMaskTypePostProcessors(MaskTypePostProcessor maskTypePostProcessor) {
+        this.maskTypePostProcessors.add(maskTypePostProcessor);
     }
 
-    public List<MaskProcessor> getMaskProcessors() {
-        return maskProcessors;
+    public List<MaskTypePostProcessor> getMaskTypePostProcessors() {
+        return maskTypePostProcessors;
     }
 
     public MaskConfigProperties getMaskConfigProperties() {
@@ -68,7 +68,7 @@ public class MaskManager {
                 // 终止启动
                 throw new RuntimeException("There Are Duplicate Algorithm Configurations，class:" + maskAlgorithm.getClass());
             } else {
-                log.debug("{}实例化成功，type:{}",maskAlgorithm.getClass().getName(),type);
+                log.debug("{}实例化成功，type:{}", maskAlgorithm.getClass().getName(), type);
                 MASK_ALGORITHM.put(type, maskAlgorithm);
             }
         }
