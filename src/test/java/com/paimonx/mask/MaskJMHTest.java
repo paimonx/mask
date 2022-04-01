@@ -144,9 +144,7 @@ public class MaskJMHTest {
 
     /**
      * 需要去除代码中对uri 的判断
-     *  1. 使 com.paimonx.mask.util.RequestUtils#getRequest()   return null;
-     *  2. com.paimonx.mask.config.MaskSerializeTemplate#canMask(java.lang.Class, java.lang.String)  第42-48行注释掉，54行 uri->null
-     *  3.
+     *  1.  com.paimonx.mask.config.MaskSerializeTemplate#getMaskType(java.lang.Class, java.lang.String, java.lang.String)  第38-40行注掉
      * @throws JsonProcessingException
      */
     @Benchmark
