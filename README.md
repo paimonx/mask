@@ -53,22 +53,30 @@
 >
 > >  工程加载jar，并配置信息
 > >
-> > 例如：
+> >  例如：
 > >
-> > ```yaml
-> > spring:
-> >   api:
-> >     mask:
-> >       config:
-> >         enabled: true
-> >         class-definitions:
-> >           "[com.paimonx.maskexample.entity.User]":
-> >             name: "name"
-> >             idNo: "idno"
-> >             phone: "phone"
-> >           "[com.paimonx.maskexample.entity.Address]":
-> >             detailed: "common"
-> > ```
+> >  ```yaml
+> >  spring:
+> >    api:
+> >      mask:
+> >        config:
+> >          enabled: true
+> >          skip-uri:
+> >            - /not/user
+> >  #        trust-ip:
+> >  #          - 192.168.12.120
+> >          uri-type:
+> >            "[/uriType]": "*common"
+> >          class-definitions:
+> >            "[com.paimonx.maskexample.entity.Address]":
+> >              detailed: "common"
+> >            "[com.paimonx.maskexample.entity.User]":
+> >              name: "name"
+> >              idNo: "idno"
+> >              phone: "phone"
+> >              onceName: "*name"
+> >              age: "common"
+> >  ```
 
 ### 进阶使用
 
@@ -110,7 +118,7 @@
 >
 > ##### 结论
 >
-> mask大相较于原本Jackson额外消耗在5%之内。(PS:详见JMH基准测试)
+> mask大相较于原生Jackson额外消耗在5%之内。(PS:详见JMH基准测试)
 >
 > [MaskJMHTest]: )https://github.com/paimonx/mask/blob/main/src/test/java/com/paimonx/mask/MaskJMHTest.java
 >
@@ -156,5 +164,5 @@
 
 ### 设计思想
 <img src="https://user-images.githubusercontent.com/94901242/160125054-fc5db4df-1a49-4629-8967-f4d7e25e3878.png" alt="Spring"  />
-<img src="https://user-images.githubusercontent.com/94901242/160125075-ffb7f58c-9b88-4f9a-baef-18ef280bde79.png" alt="mask"  />
+<img src="https://user-images.githubusercontent.com/94901242/161388039-84b7f168-81a9-4bf3-a3b3-780c66089b08.png" alt="mask"  />
 
