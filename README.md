@@ -57,11 +57,11 @@
 > >
 > >  ```yaml
 > >  spring:
-> >    api:
-> >      mask:
-> >        config:
-> >          enabled: true
-> >          skip-uri:
+> >  api:
+> >    mask:
+> >      config:
+> >        enabled: true
+> >        skip-uri:
 > >            - /not/user
 > >  #        trust-ip:
 > >  #          - 192.168.12.120
@@ -77,6 +77,8 @@
 > >              onceName: "*name"
 > >              age: "common"
 > >  ```
+>
+> [**example**](https://github.com/paimonx/mask-example)
 
 ### 进阶使用
 
@@ -101,9 +103,8 @@
 
 * 基础类型
 
-  > 因为基础类型并不被Jack
+  > 因为基础类型并不被Jackson进行作用，请配置`spring.api.mask.config.uriType`来进行控制。
   >
-  > son进行作用，请配置`spring.api.mask.config.uriType`来进行控制。
 
 ### 性能测试
 
@@ -120,7 +121,7 @@
 >
 > mask大相较于原生Jackson额外消耗在5%之内。(PS:详见JMH基准测试)
 >
-> [MaskJMHTest]: )https://github.com/paimonx/mask/blob/main/src/test/java/com/paimonx/mask/MaskJMHTest.java
+> [**MaskJMHTest**](https://github.com/paimonx/mask/blob/main/src/test/java/com/paimonx/mask/MaskJMHTest.java)
 >
 > ##### JMeter（v1.0）
 >
