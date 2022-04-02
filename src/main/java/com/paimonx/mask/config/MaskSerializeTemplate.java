@@ -35,9 +35,9 @@ public abstract class MaskSerializeTemplate extends SimpleBeanPropertyFilter {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         MaskConfigProperties maskConfigProperties = maskManager.getMaskConfigProperties();
         // 如果当前正在进行的是class模式 并且该请求已经被 uri模式处理过，就不再进行处理
-/*        if (null != clazz && doChooseUriOrClass(maskConfigProperties, requestAttributes)) {
+        if (null != clazz && doChooseUriOrClass(maskConfigProperties, requestAttributes)) {
             return null;
-        }*/
+        }
         // 一些后置处理
         maskType = doWebPostProcessor(maskConfigProperties, requestAttributes, maskType);
         return maskType;

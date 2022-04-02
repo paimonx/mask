@@ -93,7 +93,9 @@
 
 * 基础类型
 
-  > 因为基础类型并不被Jackson进行作用，请配置`spring.api.mask.config.uriType`来进行控制。
+  > 因为基础类型并不被Jack
+  >
+  > son进行作用，请配置`spring.api.mask.config.uriType`来进行控制。
 
 ### 性能测试
 
@@ -108,11 +110,11 @@
 >
 > ##### 结论
 >
-> ```
-> mask(2240 ns/op)大概比Jackson序列化(2007 ns/op)慢10%左右。 这200纳秒对业务功能几乎没有影响。
-> ```
+> mask大相较于原本Jackson额外消耗在5%之内。(PS:详见JMH基准测试)
 >
-> ##### JMeter
+> [MaskJMHTest]: )https://github.com/paimonx/mask/blob/main/src/test/java/com/paimonx/mask/MaskJMHTest.java
+>
+> ##### JMeter（v1.0）
 >
 > > * **原生Jackson**  
 > >
@@ -130,7 +132,7 @@
 > >
 > >   <img src="https://user-images.githubusercontent.com/94901242/160852059-16399216-f74b-40dc-9175-88741b2551cf.png" alt="mask-5" style="zoom:80%;" />
 >
-> ##### JVisulaVM
+> ##### JVisulaVM(v1.0)
 >
 > > * **原生Jackson**  
 > >
@@ -148,9 +150,9 @@
 > >
 > >   <img src="https://user-images.githubusercontent.com/94901242/160854349-44e82557-5fc8-4278-99d2-4afa096e4b43.png" alt="mask-5-heap" style="zoom: 33%;" />
 >
-> ##### JMH
+> ##### JMH(now)
 >
-> > ![JMH](https://user-images.githubusercontent.com/94901242/160866222-1df228bd-116a-4349-a6c9-3d61bb2c4572.png)
+> > ![JMH](https://user-images.githubusercontent.com/94901242/161273127-a48a1268-db89-4543-af15-47116529c9f1.png)
 
 ### 设计思想
 <img src="https://user-images.githubusercontent.com/94901242/160125054-fc5db4df-1a49-4629-8967-f4d7e25e3878.png" alt="Spring"  />
