@@ -57,11 +57,11 @@
 > >
 > >  ```yaml
 > >  spring:
-> >  api:
-> >    mask:
-> >      config:
-> >        enabled: true
-> >        skip-uri:
+> >    api:
+> >      mask:
+> >        config:
+> >          enabled: true
+> >          skip-uri:
 > >            - /not/user
 > >  #        trust-ip:
 > >  #          - 192.168.12.120
