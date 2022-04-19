@@ -3,7 +3,6 @@ package com.paimonx.mask.config;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.paimonx.mask.MaskConfigProperties;
 import com.paimonx.mask.MaskManager;
-import com.paimonx.mask.algorithm.CollectionMaskAlgorithm;
 import com.paimonx.mask.processor.MaskTypePostProcessor;
 import com.paimonx.mask.spi.MaskAlgorithm;
 import org.springframework.util.Assert;
@@ -26,10 +25,10 @@ public abstract class MaskSerializeTemplate extends SimpleBeanPropertyFilter {
     }
 
 
-    protected final String getMaskType(final Class<?> clazz, final String fieldName,final String uri) {
+    protected final String getMaskType(final Class<?> clazz, final String fieldName, final String uri) {
         // 获取 相应的type
         String maskType = doGetMaskType(clazz, fieldName, uri);
-        if (null == maskType){
+        if (null == maskType) {
             return null;
         }
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
@@ -63,17 +62,7 @@ public abstract class MaskSerializeTemplate extends SimpleBeanPropertyFilter {
 
 
     protected final Object doMask(final Object value, final String maskType) {
-
-        final MaskAlgorithm algorithm;
-        if (maskType.startsWith(CollectionMaskAlgorithm.LABEL)) {
-            String specificMaskType = maskType.substring(1);
-            MaskAlgorithm specificAlgorithm = MaskManager.MASK_ALGORITHM.get(specificMaskType);
-            Assert.notNull(specificAlgorithm, "未找到type为:" + maskType + "实现");
-            algorithm = new CollectionMaskAlgorithm(specificAlgorithm);
-        } else {
-            algorithm = MaskManager.MASK_ALGORITHM.get(maskType);
-            Assert.notNull(algorithm, "未找到type为:" + maskType + "实现");
-        }
+        final MaskAlgorithm algorithm = MaskManager.MASK_ALGORITHM.get(maskType);
         return algorithm.encrypt(value);
     }
 
