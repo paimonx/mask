@@ -24,18 +24,17 @@ public final class CollectionMaskAlgorithm implements MaskAlgorithm {
 
     @Override
     public String type() {
-        return LABEL;
+        return LABEL+maskAlgorithm.type();
     }
 
     @Override
     public Object encrypt(Object plaintext) {
         final Collection plainList;
         if (plaintext.getClass().isArray()) {
-            Object[] aa = (Object[]) plaintext;
-             plainList = Arrays.asList(aa);
-        }else if (plaintext instanceof Collection){
-             plainList = (Collection) plaintext;
-        }else {
+            plainList = Arrays.asList((Object[]) plaintext);
+        } else if (plaintext instanceof Collection) {
+            plainList = (Collection) plaintext;
+        } else {
             throw new RuntimeException("错误类型");
         }
         List<Object> list = new ArrayList<>();
