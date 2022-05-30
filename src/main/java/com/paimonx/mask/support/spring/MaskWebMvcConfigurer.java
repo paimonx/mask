@@ -7,12 +7,8 @@ import com.paimonx.mask.MaskManager;
 import com.paimonx.mask.config.jackson.MaskBeanPropertyFilter;
 import com.paimonx.mask.config.jackson.MaskBeanSerializerModifier;
 import com.paimonx.mask.support.PropertyKeyConst;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
@@ -21,13 +17,13 @@ import java.util.List;
  * @author xu
  * @date 2022/3/17
  */
-@AutoConfigureBefore(MaskManager.class)
-@EnableWebMvc
-@Configuration
 public class MaskWebMvcConfigurer implements WebMvcConfigurer {
-    @Autowired
+
     private MaskManager maskManager;
 
+    public MaskWebMvcConfigurer(MaskManager maskManager) {
+        this.maskManager = maskManager;
+    }
 
     @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
